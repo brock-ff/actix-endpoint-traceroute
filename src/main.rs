@@ -15,9 +15,11 @@ pub struct MyError {
 impl error::ResponseError for MyError {}
 
 #[instrument]
-#[get("/{id}")]
-async fn index(path: Path<String>) -> Result<&'static str, MyError> {
-    let id = path.to_string();
+#[get("/{id}/{x}")]
+// success: localhost:8080/good_path/<anything>
+// failure: localhost:8080/<anything besides "good_path">/<anything>
+async fn handler(path: Path<(String, String)>) -> Result<&'static str, MyError> {
+    let id = path.0.to_string();
     if id == "good_path".to_owned() {
         return Ok("nice");
     }
@@ -31,7 +33,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         App::new()
-            .service(index)
+            .service(handler)
     })
     .bind("127.0.0.1:8080")?
     .run()

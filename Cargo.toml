@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 actix-web="2.0"
 log="0.4"
-std-logger="0.3"
+env_logger = "0.6.0"
 failure="0.1"
 tracing={version="0.1", features=["log-always"]}
 tracing-futures="0.2"

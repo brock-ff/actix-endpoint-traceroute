@@ -2,8 +2,12 @@ use actix_web::web::Path;
 use actix_web::Result;
 use actix_web::{error, get, App, HttpServer};
 use failure::Fail;
-use std_logger;
 use tracing::instrument;
+use log::*;
+
+#[allow(unused_imports)]
+#[macro_use]
+extern crate env_logger;
 
 #[derive(Fail, Debug)]
 #[fail(display = "Hello user. You got an error.")]
@@ -24,12 +28,13 @@ async fn handler(path: Path<(String, String)>) -> Result<&'static str, MyError> 
         return Ok("nice");
     }
     let err = MyError { name: "test error" };
+    debug!("debug");
     Err(err)
 }
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    std_logger::init();
+    env_logger::init();
 
     HttpServer::new(|| {
         App::new()
